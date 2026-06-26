@@ -141,6 +141,7 @@
       <a href="#" onclick="showPage('portfolio')" id="nav-portfolio" class="active">Portfolio</a>
       <a href="#" onclick="showPage('resume')" id="nav-resume">Resume</a>
       <a href="#" onclick="showPage('tracker')" id="nav-tracker">Job Tracker</a>
+      <a href="#" onclick="showPage('study')" id="nav-study">Study Plan</a>
     </div>
   </div>
 </nav>
@@ -295,6 +296,7 @@
     document.getElementById('page-'+p).classList.add('active');
     document.getElementById('nav-'+p).classList.add('active');
     if(p==='tracker') render();
+    if(p==='study') studyInit();
     return false;
   }
 
@@ -412,6 +414,234 @@
   }
 
   render();
+</script>
+
+<!-- ═══════════════ STUDY PLAN ═══════════════ -->
+<div class="page" id="page-study">
+  <div id="s-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;"></div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:0;" id="s-tabs"></div>
+  <div id="s-sub-tabs" style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap;"></div>
+  <div id="s-content"></div>
+</div>
+
+<style>
+  .s-tab{padding:7px 16px;font-size:13px;border:none;background:none;cursor:pointer;color:var(--mid);border-bottom:2px solid transparent;margin-bottom:-1px;}
+  .s-tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+  .s-wtab{padding:6px 14px;font-size:12px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:none;color:var(--mid);}
+  .s-wtab.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .s-day{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;}
+  .s-day-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .s-day-title{font-size:14px;font-weight:700;color:var(--dark);display:flex;align-items:center;gap:8px;}
+  .s-hrs{font-size:12px;color:var(--light);background:var(--bg);padding:2px 10px;border-radius:10px;}
+  .s-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .s-slot{border-radius:8px;padding:10px 12px;}
+  .s-slot-m{background:#e6f1fb;} .s-slot-a{background:#eaf3de;} .s-slot-e{background:#faeeda;}
+  .s-slot-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .s-slot-m .s-slot-label{color:#0c447c;} .s-slot-a .s-slot-label{color:#27500a;} .s-slot-e .s-slot-label{color:#633806;}
+  .s-slot-text{font-size:12px;color:var(--dark);line-height:1.45;}
+  .lc-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .lc-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;}
+  .lc-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .lc-card-name{font-size:14px;font-weight:700;color:var(--dark);}
+  .lc-prog{font-size:12px;color:var(--light);}
+  .lc-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:10px;overflow:hidden;}
+  .lc-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s;}
+  .lc-prob{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mid);padding:4px 0;cursor:pointer;}
+  .lc-prob input{accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer;}
+  .lc-prob.done span{text-decoration:line-through;color:#bbb;}
+  .lc-diff{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;flex-shrink:0;}
+  .d-easy{background:#eaf3de;color:#27500a;} .d-med{background:#faeeda;color:#633806;} .d-hard{background:#fcebeb;color:#791f1f;}
+  .lc-link{margin-left:auto;font-size:12px;color:var(--accent);text-decoration:none;}
+  .r-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .r-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;}
+  .r-cat{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin-bottom:10px;}
+  .r-item{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
+  .r-item:last-child{border-bottom:none;}
+  .r-name{font-size:13px;font-weight:700;color:var(--dark);}
+  .r-desc{font-size:12px;color:var(--mid);}
+  .r-link{font-size:12px;color:var(--accent);text-decoration:none;}
+  .fb{font-size:10px;padding:1px 6px;border-radius:3px;font-weight:700;}
+  .fb-free{background:#eaf3de;color:#27500a;} .fb-paid{background:#faeeda;color:#633806;}
+</style>
+
+<script>
+const SK='neha_study_v1';let ss={};try{ss=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
+function ssave(){try{localStorage.setItem(SK,JSON.stringify(ss));}catch(e){}}
+const SWEEKS=[
+  {label:'Week 1',days:[
+    {day:'Mon',hrs:'4–5 hrs',slots:['Python OOP, decorators, generators','Arrays & Strings — LeetCode easy ×3','FastAPI: build a hello-world API']},
+    {day:'Tue',hrs:'4–5 hrs',slots:['Python async/await, context managers','HashMaps & Sets — LeetCode easy ×3','FastAPI: path params, Pydantic models']},
+    {day:'Wed',hrs:'4–5 hrs',slots:['Python internals: GIL, memory model','Two Pointers — LeetCode easy/med ×3','PostgreSQL: indexes, EXPLAIN ANALYZE']},
+    {day:'Thu',hrs:'4–5 hrs',slots:['REST API design: versioning, pagination','Sliding Window — LeetCode med ×3','PostgreSQL: transactions, ACID, joins']},
+    {day:'Fri',hrs:'4–5 hrs',slots:['Design patterns: Factory, Singleton, Strategy','Binary Search — LeetCode easy/med ×3','Redis: install, caching basics, TTL']},
+    {day:'Sat',hrs:'5–6 hrs',slots:['Build: FastAPI + PostgreSQL CRUD API','LeetCode revision — redo 3 weak problems','Mock: explain TCS pipeline aloud']},
+    {day:'Sun',hrs:'2–3 hrs',slots:['Light revision only','Plan next week, review notes','Rest — no new topics']},
+  ]},
+  {label:'Week 2',days:[
+    {day:'Mon',hrs:'4–5 hrs',slots:['Linked Lists — theory + LeetCode easy ×3','MongoDB: schema design, aggregation','Redis: pub/sub, rate limiting patterns']},
+    {day:'Tue',hrs:'4–5 hrs',slots:['Stacks & Queues — LeetCode easy/med ×3','SQL advanced: window functions, CTEs','Auth: JWT, OAuth2 basics']},
+    {day:'Wed',hrs:'4–5 hrs',slots:['Trees: BFS, DFS, traversals — ×3','DB indexing: B-tree, composite indexes','Docker: Dockerfile for FastAPI app']},
+    {day:'Thu',hrs:'4–5 hrs',slots:['Binary Trees: level order, LCA — ×3','Connection pooling, N+1 query problem','Docker Compose: app + postgres + redis']},
+    {day:'Fri',hrs:'4–5 hrs',slots:['Graphs: BFS/DFS basics — ×3','System design intro: scalability, latency','Design: URL shortener (draw it out)']},
+    {day:'Sat',hrs:'5–6 hrs',slots:['Build: add Redis caching to Week 1 API','LeetCode: 4 mixed timed (20 min each)','Mock: explain IBM NLP project technically']},
+    {day:'Sun',hrs:'2–3 hrs',slots:['Revision only','Tag weak LC topics','Rest']},
+  ]},
+  {label:'Week 3',days:[
+    {day:'Mon',hrs:'4–5 hrs',slots:['System design: load balancers, CDN, caching','Graphs: topological sort, cycle detection ×3','Kafka basics: producers, consumers, topics']},
+    {day:'Tue',hrs:'4–5 hrs',slots:['System design: design a rate limiter (full)','DP intro: memoisation ×3','Microservices: API gateway, service mesh']},
+    {day:'Wed',hrs:'4–5 hrs',slots:['System design: notification system','DP: knapsack, coin change ×3','CI/CD: GitHub Actions pipeline']},
+    {day:'Thu',hrs:'4–5 hrs',slots:['System design: chat system (basic)','Recursion & backtracking — ×3','Kubernetes: pods, deployments, services']},
+    {day:'Fri',hrs:'4–5 hrs',slots:['System design: Twitter feed (read-heavy)','Heap & Priority Queue — med ×3','Monitoring: structured logging, health checks']},
+    {day:'Sat',hrs:'5–6 hrs',slots:['Full design mock: design OpenArena!','LeetCode: 4 medium problems timed','STAR format: IBM + TCS + TR stories']},
+    {day:'Sun',hrs:'2–3 hrs',slots:['Light revision','Identify top 5 weak LC topics','Rest']},
+  ]},
+  {label:'Week 4',days:[
+    {day:'Mon',hrs:'4–5 hrs',slots:['LeetCode: 5 medium timed (25 min each)','System design revision: rate limiter + URL shortener','HR prep: why backend, salary expectation']},
+    {day:'Tue',hrs:'4–5 hrs',slots:['Full mock #1: DSA round (Pramp)','Python revision: GIL, decorators, async','Fix weak areas from mock feedback']},
+    {day:'Wed',hrs:'4–5 hrs',slots:['Full mock #2: system design round','SQL revision: 10 complex queries from scratch','Redis + Kafka revision']},
+    {day:'Thu',hrs:'4–5 hrs',slots:['LeetCode: 5 mixed easy/med/hard timed','6 STAR stories ready','Research: Razorpay, Zepto, Groww, Atlassian']},
+    {day:'Fri',hrs:'4–5 hrs',slots:['Full mock #3: DSA + system design + HR','Review all system design notes','Apply to 5 companies']},
+    {day:'Sat',hrs:'3–4 hrs',slots:['LC easy only — confidence building','Read target company engineering blogs','Rest, no heavy prep']},
+    {day:'Sun',hrs:'1–2 hrs',slots:['Final revision of key concepts only','Prep questions to ask interviewers','Rest — you are ready']},
+  ]},
+];
+const STOPICS=[
+  {id:'arrays',name:'Arrays & Strings',week:1,problems:[
+    {id:'a1',name:'Two Sum',diff:'easy',url:'https://leetcode.com/problems/two-sum/'},
+    {id:'a2',name:'Best Time to Buy Stock',diff:'easy',url:'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/'},
+    {id:'a3',name:'Contains Duplicate',diff:'easy',url:'https://leetcode.com/problems/contains-duplicate/'},
+    {id:'a4',name:'Product of Array Except Self',diff:'med',url:'https://leetcode.com/problems/product-of-array-except-self/'},
+    {id:'a5',name:'Maximum Subarray',diff:'med',url:'https://leetcode.com/problems/maximum-subarray/'},
+  ]},
+  {id:'hashmap',name:'HashMaps & Sets',week:1,problems:[
+    {id:'h1',name:'Valid Anagram',diff:'easy',url:'https://leetcode.com/problems/valid-anagram/'},
+    {id:'h2',name:'Group Anagrams',diff:'med',url:'https://leetcode.com/problems/group-anagrams/'},
+    {id:'h3',name:'Top K Frequent Elements',diff:'med',url:'https://leetcode.com/problems/top-k-frequent-elements/'},
+    {id:'h4',name:'Longest Consecutive Sequence',diff:'med',url:'https://leetcode.com/problems/longest-consecutive-sequence/'},
+  ]},
+  {id:'twoptr',name:'Two Pointers',week:1,problems:[
+    {id:'tp1',name:'Valid Palindrome',diff:'easy',url:'https://leetcode.com/problems/valid-palindrome/'},
+    {id:'tp2',name:'3Sum',diff:'med',url:'https://leetcode.com/problems/3sum/'},
+    {id:'tp3',name:'Container With Most Water',diff:'med',url:'https://leetcode.com/problems/container-with-most-water/'},
+    {id:'tp4',name:'Trapping Rain Water',diff:'hard',url:'https://leetcode.com/problems/trapping-rain-water/'},
+  ]},
+  {id:'sliding',name:'Sliding Window',week:1,problems:[
+    {id:'sw1',name:'Longest Substring Without Repeat',diff:'med',url:'https://leetcode.com/problems/longest-substring-without-repeating-characters/'},
+    {id:'sw2',name:'Minimum Window Substring',diff:'hard',url:'https://leetcode.com/problems/minimum-window-substring/'},
+    {id:'sw3',name:'Permutation in String',diff:'med',url:'https://leetcode.com/problems/permutation-in-string/'},
+  ]},
+  {id:'trees',name:'Trees & BFS/DFS',week:2,problems:[
+    {id:'tr1',name:'Invert Binary Tree',diff:'easy',url:'https://leetcode.com/problems/invert-binary-tree/'},
+    {id:'tr2',name:'Max Depth of Binary Tree',diff:'easy',url:'https://leetcode.com/problems/maximum-depth-of-binary-tree/'},
+    {id:'tr3',name:'Level Order Traversal',diff:'med',url:'https://leetcode.com/problems/binary-tree-level-order-traversal/'},
+    {id:'tr4',name:'Lowest Common Ancestor',diff:'med',url:'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/'},
+    {id:'tr5',name:'Right Side View',diff:'med',url:'https://leetcode.com/problems/binary-tree-right-side-view/'},
+  ]},
+  {id:'graphs',name:'Graphs',week:2,problems:[
+    {id:'gr1',name:'Number of Islands',diff:'med',url:'https://leetcode.com/problems/number-of-islands/'},
+    {id:'gr2',name:'Clone Graph',diff:'med',url:'https://leetcode.com/problems/clone-graph/'},
+    {id:'gr3',name:'Course Schedule',diff:'med',url:'https://leetcode.com/problems/course-schedule/'},
+    {id:'gr4',name:'Pacific Atlantic Water Flow',diff:'med',url:'https://leetcode.com/problems/pacific-atlantic-water-flow/'},
+  ]},
+  {id:'dp',name:'Dynamic Programming',week:3,problems:[
+    {id:'dp1',name:'Climbing Stairs',diff:'easy',url:'https://leetcode.com/problems/climbing-stairs/'},
+    {id:'dp2',name:'Coin Change',diff:'med',url:'https://leetcode.com/problems/coin-change/'},
+    {id:'dp3',name:'Longest Common Subsequence',diff:'med',url:'https://leetcode.com/problems/longest-common-subsequence/'},
+    {id:'dp4',name:'House Robber',diff:'med',url:'https://leetcode.com/problems/house-robber/'},
+    {id:'dp5',name:'Word Break',diff:'med',url:'https://leetcode.com/problems/word-break/'},
+  ]},
+  {id:'heap',name:'Heap & Priority Queue',week:3,problems:[
+    {id:'hp1',name:'Kth Largest Element',diff:'med',url:'https://leetcode.com/problems/kth-largest-element-in-an-array/'},
+    {id:'hp2',name:'Top K Frequent Words',diff:'med',url:'https://leetcode.com/problems/top-k-frequent-words/'},
+    {id:'hp3',name:'Find Median from Data Stream',diff:'hard',url:'https://leetcode.com/problems/find-median-from-data-stream/'},
+  ]},
+];
+const SRES=[
+  {cat:'DSA & LeetCode',items:[{name:'NeetCode.io',desc:'Best structured LC roadmap',url:'https://neetcode.io',free:true},{name:"Striver's A2Z DSA Sheet",desc:'Popular in India, very thorough',url:'https://takeuforward.org/strivers-a2z-dsa-course',free:true},{name:'LeetCode',desc:'Practice problems, free tier enough',url:'https://leetcode.com',free:true}]},
+  {cat:'System Design',items:[{name:'System Design Interview – Alex Xu',desc:'Vol 1, must read',url:'https://www.amazon.in/dp/B08CMF2CQF',free:false},{name:'Gaurav Sen – YouTube',desc:'Best free system design channel',url:'https://www.youtube.com/@gkcs',free:true},{name:'ByteByteGo',desc:'Visual system design newsletter',url:'https://bytebytego.com',free:true}]},
+  {cat:'Python & Backend',items:[{name:'Fluent Python (2nd ed)',desc:'Deep Python internals',url:'https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/',free:false},{name:'FastAPI docs',desc:'Official, excellent quality',url:'https://fastapi.tiangolo.com',free:true},{name:'RealPython',desc:'Practical Python tutorials',url:'https://realpython.com',free:true}]},
+  {cat:'Mock Interviews',items:[{name:'Pramp',desc:'Free peer mock interviews',url:'https://www.pramp.com',free:true},{name:'interviewing.io',desc:'Anonymous mocks with engineers',url:'https://interviewing.io',free:false},{name:'Exponent',desc:'System design mocks',url:'https://www.tryexponent.com',free:false}]},
+  {cat:'Databases',items:[{name:'PostgreSQL Tutorial',desc:'Free, comprehensive',url:'https://www.postgresqltutorial.com',free:true},{name:'Redis University',desc:'Free Redis courses',url:'https://university.redis.com',free:true},{name:'Use The Index, Luke',desc:'SQL indexing deep dive',url:'https://use-the-index-luke.com',free:true}]},
+  {cat:'Job Portals',items:[{name:'Instahyre',desc:'Best for product cos in India',url:'https://instahyre.com',free:true},{name:'Cutshort',desc:'AI-matched, good mid-size cos',url:'https://cutshort.io',free:true},{name:'Wellfound',desc:'Startups, transparent salaries',url:'https://wellfound.com',free:true}]},
+];
+let sCurWeek=0,sInited=false;
+function studyInit(){
+  if(sInited){sRenderStats();return;}
+  sInited=true;
+  document.getElementById('s-tabs').innerHTML=['Study plan','LeetCode tracker','Resources'].map((l,i)=>{
+    const id=['plan','lc','res'][i];
+    return `<button class="s-tab${i===0?' on':''}" onclick="sTab('${id}')">${l}</button>`;
+  }).join('');
+  sRenderStats();sTab('plan');
+}
+function sTab(t){
+  document.querySelectorAll('.s-tab').forEach((el,i)=>el.classList.toggle('on',['plan','lc','res'][i]===t));
+  if(t==='plan')sRenderPlan();else if(t==='lc')sRenderLC();else sRenderRes();
+}
+function sRenderStats(){
+  const total=STOPICS.reduce((s,t)=>s+t.problems.length,0);
+  const done=STOPICS.reduce((s,t)=>s+t.problems.filter(p=>ss['lc_'+p.id]).length,0);
+  const pct=total?Math.round(done/total*100):0;
+  const dd=Object.keys(ss).filter(k=>k.startsWith('day_')&&ss[k]).length;
+  document.getElementById('s-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">LC Solved</div><div class="stat-num">${done}/${total}</div></div>
+    <div class="stat-card"><div class="stat-label">LC Progress</div><div class="stat-num">${pct}%</div></div>
+    <div class="stat-card"><div class="stat-label">Days Done</div><div class="stat-num">${dd}/28</div></div>
+    <div class="stat-card"><div class="stat-label">Days Left</div><div class="stat-num">${28-Math.min(28,dd)}</div></div>`;
+}
+function sRenderPlan(){
+  document.getElementById('s-sub-tabs').innerHTML=SWEEKS.map((w,i)=>
+    `<button class="s-wtab${i===sCurWeek?' on':''}" onclick="sSW(${i})">${w.label}</button>`).join('');
+  document.getElementById('s-content').innerHTML=SWEEKS[sCurWeek].days.map((d,i)=>{
+    const chk=ss['day_'+sCurWeek+'_'+i]?'checked':'';
+    return `<div class="s-day">
+      <div class="s-day-head">
+        <label class="s-day-title" style="cursor:pointer;"><input type="checkbox" ${chk} style="accent-color:var(--accent);width:15px;height:15px;" onchange="sTD(${sCurWeek},${i},this.checked)">${d.day}</label>
+        <span class="s-hrs">${d.hrs}</span>
+      </div>
+      <div class="s-slots">
+        <div class="s-slot s-slot-m"><div class="s-slot-label">Morning</div><div class="s-slot-text">${d.slots[0]}</div></div>
+        <div class="s-slot s-slot-a"><div class="s-slot-label">Afternoon</div><div class="s-slot-text">${d.slots[1]}</div></div>
+        <div class="s-slot s-slot-e"><div class="s-slot-label">Evening</div><div class="s-slot-text">${d.slots[2]}</div></div>
+      </div></div>`;
+  }).join('');
+}
+function sSW(w){sCurWeek=w;sRenderPlan();}
+function sTD(w,d,v){ss['day_'+w+'_'+d]=v;ssave();sRenderStats();}
+function sRenderLC(){
+  document.getElementById('s-sub-tabs').innerHTML='';
+  document.getElementById('s-content').innerHTML=`<div class="lc-grid2">${STOPICS.map(t=>{
+    const done=t.problems.filter(p=>ss['lc_'+p.id]).length;
+    const pct=Math.round(done/t.problems.length*100);
+    return `<div class="lc-card">
+      <div class="lc-card-head"><span class="lc-card-name">${t.name}</span><span class="lc-prog">${done}/${t.problems.length} · Wk${t.week}</span></div>
+      <div class="lc-bar"><div class="lc-fill" style="width:${pct}%"></div></div>
+      ${t.problems.map(p=>`<label class="lc-prob${ss['lc_'+p.id]?' done':''}">
+        <input type="checkbox" ${ss['lc_'+p.id]?'checked':''} onchange="sLC('${p.id}',this.checked)" style="accent-color:var(--accent);width:14px;height:14px;">
+        <span>${p.name}</span><span class="lc-diff d-${p.diff}">${p.diff}</span>
+        <a class="lc-link" href="${p.url}" target="_blank" onclick="event.stopPropagation()">↗</a>
+      </label>`).join('')}
+    </div>`;}).join('')}</div>`;
+}
+function sLC(id,v){ss['lc_'+id]=v;ssave();sRenderStats();sRenderLC();}
+function sRenderRes(){
+  document.getElementById('s-sub-tabs').innerHTML='';
+  document.getElementById('s-content').innerHTML=`<div class="r-grid">${SRES.map(r=>`
+    <div class="r-card"><div class="r-cat">${r.cat}</div>
+    ${r.items.map(item=>`<div class="r-item"><div style="flex:1;">
+      <div class="r-name">${item.name} <span class="fb ${item.free?'fb-free':'fb-paid'}">${item.free?'free':'paid'}</span></div>
+      <div class="r-desc">${item.desc}</div>
+      <a class="r-link" href="${item.url}" target="_blank">Open →</a>
+    </div></div>`).join('')}</div>`).join('')}</div>`;
+}
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
 </script>
 </body>
 </html>
