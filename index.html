@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neha Lal – Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --accent: #2c5f8a;
+    --accent-light: #e6f1fb;
+    --dark: #1a1a1a;
+    --mid: #444;
+    --light: #666;
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --border: #e2e6ea;
+  }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--dark); font-size: 15px; line-height: 1.6; }
+
+  /* NAV */
+  nav { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .nav-inner { max-width: 1000px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .nav-logo { font-family: 'EB Garamond', serif; font-size: 20px; font-weight: 600; color: var(--dark); text-decoration: none; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a { padding: 6px 14px; border-radius: 6px; font-size: 14px; color: var(--mid); text-decoration: none; transition: background 0.15s; }
+  .nav-links a:hover, .nav-links a.active { background: var(--accent-light); color: var(--accent); }
+
+  /* PAGES */
+  .page { display: none; max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .page.active { display: block; }
+
+  /* ── PORTFOLIO PAGE ── */
+  .hero { text-align: center; padding: 3rem 0 2rem; }
+  .hero h1 { font-family: 'EB Garamond', serif; font-size: 48px; font-weight: 600; color: var(--dark); }
+  .hero .subtitle { font-size: 16px; color: var(--accent); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin: 8px 0 16px; }
+  .hero .bio { font-size: 16px; color: var(--mid); max-width: 600px; margin: 0 auto 24px; line-height: 1.7; }
+  .hero-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.15s; cursor: pointer; border: none; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #1e4a6e; }
+  .btn-outline { background: var(--surface); color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn-outline:hover { background: var(--accent-light); }
+
+  .section-heading { font-family: 'EB Garamond', serif; font-size: 26px; font-weight: 600; color: var(--dark); margin: 2.5rem 0 1rem; border-bottom: 1.5px solid var(--accent); padding-bottom: 6px; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1.5px; background: var(--border); }
+  .tl-item { position: relative; margin-bottom: 1.5rem; }
+  .tl-item::before { content: ''; position: absolute; left: -21px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface); box-shadow: 0 0 0 1.5px var(--accent); }
+  .tl-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; }
+  .tl-company { font-weight: 700; font-size: 15px; color: var(--dark); }
+  .tl-period { font-size: 13px; color: var(--light); }
+  .tl-role { font-size: 14px; color: var(--accent); font-weight: 600; margin: 2px 0 6px; }
+  .tl-desc { font-size: 14px; color: var(--mid); line-height: 1.6; }
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag { font-size: 12px; background: var(--accent-light); color: var(--accent); padding: 3px 9px; border-radius: 4px; font-weight: 600; }
+
+  /* SKILLS GRID */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+  .skill-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .skill-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .skill-card p { font-size: 13px; color: var(--mid); line-height: 1.6; }
+
+  /* ── RESUME PAGE ── */
+  .resume-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .resume-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border); background: #fafbfc; }
+  .resume-toolbar span { font-size: 14px; color: var(--mid); }
+  .resume-frame { width: 100%; height: 1120px; border: none; display: block; }
+
+  /* ── TRACKER PAGE ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .stat-label { font-size: 12px; color: var(--light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .stat-num { font-size: 28px; font-weight: 700; color: var(--dark); }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
+  .toolbar h3 { font-size: 16px; font-weight: 700; color: var(--dark); }
+
+  .add-form { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 1.5rem; display: none; }
+  .add-form.open { display: block; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.04em; }
+  .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; font-family: inherit; background: var(--bg); color: var(--dark); outline: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); background: #fff; }
+  .form-group textarea { resize: vertical; min-height: 70px; }
+  .form-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+  .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; min-height: 280px; }
+  .col-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .col-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mid); }
+  .col-badge { font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; color: var(--mid); }
+  .app-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .app-card:hover { border-color: var(--accent); }
+  .app-company { font-size: 13px; font-weight: 700; color: var(--dark); }
+  .app-role { font-size: 12px; color: var(--mid); margin: 2px 0 6px; }
+  .app-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .pill { font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+  .pill-blue { background: #e6f1fb; color: #185fa5; }
+  .pill-amber { background: #faeeda; color: #854f0b; }
+  .pill-green { background: #eaf3de; color: #3b6d11; }
+  .pill-gray { background: #f1efe8; color: #5f5e5a; }
+  .empty-col { text-align: center; padding: 2rem 0; font-size: 13px; color: #bbb; }
+
+  .app-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .app-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--light); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .app-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--mid); vertical-align: middle; }
+  .app-table tr:last-child td { border-bottom: none; }
+  .app-table tr:hover td { background: #fafbfc; }
+  .move-btn { font-size: 12px; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border); background: none; cursor: pointer; color: var(--mid); margin-right: 4px; }
+  .move-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .del-btn { font-size: 12px; padding: 3px 8px; border-radius: 4px; border: 1px solid #fcc; background: none; cursor: pointer; color: #c0392b; }
+  .del-btn:hover { background: #fcebeb; }
+
+  .view-toggle { display: flex; gap: 4px; }
+  .vt-btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border); background: none; font-size: 13px; cursor: pointer; color: var(--mid); }
+  .vt-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .notes-box { font-size: 12px; color: var(--light); max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  @media (max-width: 700px) {
+    .kanban { grid-template-columns: 1fr 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="showPage('portfolio')">Neha Lal</a>
+    <div class="nav-links">
+      <a href="#" onclick="showPage('portfolio')" id="nav-portfolio" class="active">Portfolio</a>
+      <a href="#" onclick="showPage('resume')" id="nav-resume">Resume</a>
+      <a href="#" onclick="showPage('tracker')" id="nav-tracker">Job Tracker</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ PORTFOLIO ═══════════════ -->
+<div class="page active" id="page-portfolio">
+
+  <div class="hero">
+    <h1>Neha Lal</h1>
+    <div class="subtitle">Backend Software Engineer &middot; AI Platform &middot; Python &amp; AWS</div>
+    <p class="bio">5+ years building scalable Python services, cloud-native data pipelines, and AI platforms. Currently at Thomson Reuters engineering an LLM gateway powering internal AI workflows across the organisation.</p>
+    <div class="hero-links">
+      <a class="btn btn-primary" href="resume.html" target="_blank">View Resume</a>
+      <a class="btn btn-outline" href="https://www.linkedin.com/in/lal-neha" target="_blank">LinkedIn</a>
+      <a class="btn btn-outline" href="mailto:nehalal021@gmail.com">Email</a>
+    </div>
+  </div>
+
+  <div class="section-heading">Experience</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-header">
+        <span class="tl-company">Thomson Reuters</span>
+        <span class="tl-period">Aug 2025 – Present</span>
+      </div>
+      <div class="tl-role">Software Engineer – AI Platform</div>
+      <div class="tl-desc">Contributing to OpenArena, an internal AI platform supporting multiple LLM providers (GPT, Claude, Vertex AI). Building product-facing REST APIs, new features, and running weekly user workshops for prompt chain workflows.</div>
+      <div class="tag-row">
+        <span class="tag">Python</span><span class="tag">Flask</span><span class="tag">AWS Lambda</span><span class="tag">REST APIs</span><span class="tag">LLM Integration</span><span class="tag">PostgreSQL</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-header">
+        <span class="tl-company">Tata Consultancy Services</span>
+        <span class="tl-period">Jul 2023 – Jul 2025</span>
+      </div>
+      <div class="tl-role">Python Developer – AWS</div>
+      <div class="tl-desc">Independently architected an end-to-end AWS data pipeline ingesting live telemetry from hospital machines and feeding structured datasets to AI/ML models for a leading American healthcare client.</div>
+      <div class="tag-row">
+        <span class="tag">Python</span><span class="tag">AWS Glue</span><span class="tag">Step Functions</span><span class="tag">Athena</span><span class="tag">Pandas</span><span class="tag">NumPy</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-header">
+        <span class="tl-company">IBM India Pvt. Limited</span>
+        <span class="tl-period">Sep 2020 – Jun 2023</span>
+      </div>
+      <div class="tl-role">Python Application Developer</div>
+      <div class="tl-desc">Built a text-classification microservice (Flask + Watson NLU) that auto-labels unstructured enterprise data. Pushed model accuracy to 78%. Won Runners-Up at IBM Innovation Stories 2021.</div>
+      <div class="tag-row">
+        <span class="tag">Python</span><span class="tag">Flask</span><span class="tag">NLP</span><span class="tag">Watson NLU</span><span class="tag">Docker</span><span class="tag">Kubernetes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-heading">Skills</div>
+  <div class="skills-grid">
+    <div class="skill-card"><h4>Languages</h4><p>Python, SQL, JavaScript, C</p></div>
+    <div class="skill-card"><h4>Frameworks</h4><p>Flask, REST APIs, Microservices, Pandas, NumPy</p></div>
+    <div class="skill-card"><h4>AI / LLM</h4><p>LLM Integration, Prompt Engineering, NLP, Watson NLU, MLOps</p></div>
+    <div class="skill-card"><h4>Cloud & DevOps</h4><p>AWS Lambda, Glue, Athena, Step Functions · Azure · Docker · Kubernetes · CI/CD</p></div>
+    <div class="skill-card"><h4>Databases</h4><p>PostgreSQL, MongoDB</p></div>
+    <div class="skill-card"><h4>AI Dev Tools</h4><p>GitHub Copilot, Claude, ChatGPT</p></div>
+  </div>
+
+  <div class="section-heading">Education</div>
+  <div class="tl-item" style="padding-left:0;">
+    <div class="tl-header">
+      <span class="tl-company">KIIT University</span>
+      <span class="tl-period">Jun 2020 &nbsp;·&nbsp; GPA 8.91</span>
+    </div>
+    <div class="tl-role">B.Tech in Computer Science Engineering</div>
+  </div>
+
+  <div style="margin-top:3rem; padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; text-align:center;">
+    <p style="font-size:14px; color:var(--mid); margin-bottom:12px;">Actively looking for Backend Python / AI Platform roles in Bangalore</p>
+    <a class="btn btn-primary" href="mailto:nehalal021@gmail.com">Get in touch</a>
+  </div>
+</div>
+
+<!-- ═══════════════ RESUME ═══════════════ -->
+<div class="page" id="page-resume">
+  <div class="resume-wrapper">
+    <div class="resume-toolbar">
+      <span>Neha Lal – Resume (one page)</span>
+      <div style="display:flex;gap:8px;">
+        <a class="btn btn-outline" href="resume.html" target="_blank" style="font-size:13px;padding:6px 14px;">Open full page</a>
+        <button class="btn btn-primary" onclick="window.frames['resume-frame'].print()" style="font-size:13px;padding:6px 14px;">Print / Save PDF</button>
+      </div>
+    </div>
+    <iframe name="resume-frame" class="resume-frame" src="resume.html" title="Neha Lal Resume"></iframe>
+  </div>
+</div>
+
+<!-- ═══════════════ JOB TRACKER ═══════════════ -->
+<div class="page" id="page-tracker">
+
+  <div class="stats-row" id="stats-row"></div>
+
+  <div class="toolbar">
+    <h3>Applications</h3>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <div class="view-toggle">
+        <button class="vt-btn active" id="btn-kanban" onclick="setView('kanban')">Board</button>
+        <button class="vt-btn" id="btn-list" onclick="setView('list')">List</button>
+      </div>
+      <button class="btn btn-primary" onclick="toggleForm()" style="font-size:13px;padding:7px 16px;">+ Add Application</button>
+    </div>
+  </div>
+
+  <div class="add-form" id="add-form">
+    <div style="font-size:15px;font-weight:700;color:var(--dark);margin-bottom:14px;">New Application</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Company *</label><input id="f-company" placeholder="e.g. Google" /></div>
+      <div class="form-group"><label>Role *</label><input id="f-role" placeholder="e.g. Backend Engineer" /></div>
+      <div class="form-group"><label>Location</label><input id="f-location" placeholder="e.g. Bangalore" /></div>
+      <div class="form-group"><label>Source</label>
+        <select id="f-source"><option>LinkedIn</option><option>Naukri</option><option>Instahyre</option><option>Wellfound</option><option>Company Site</option><option>Referral</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Date Applied</label><input type="date" id="f-date" /></div>
+      <div class="form-group"><label>Status</label>
+        <select id="f-status"><option value="applied">Applied</option><option value="screening">Screening</option><option value="interview">Interview</option><option value="offer">Offer</option></select>
+      </div>
+      <div class="form-group full"><label>Notes</label><textarea id="f-notes" placeholder="JD highlights, contacts, prep notes, salary range..."></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addApp()">Save</button>
+      <button class="btn btn-outline" onclick="toggleForm()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="view-kanban"></div>
+  <div id="view-list" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;"></div>
+</div>
+
+<script>
+  const COLS = ['applied','screening','interview','offer'];
+  const COL_LABELS = {applied:'Applied',screening:'Screening',interview:'Interview',offer:'Offer / Rejected'};
+  const COL_PILL = {applied:'pill-blue',screening:'pill-amber',interview:'pill-blue',offer:'pill-green'};
+  const NEXT = {applied:'screening',screening:'interview',interview:'offer'};
+
+  let apps = [];
+  let view = 'kanban';
+
+  try { apps = JSON.parse(localStorage.getItem('neha_apps') || '[]'); } catch(e){}
+
+  function save() { try { localStorage.setItem('neha_apps', JSON.stringify(apps)); } catch(e){} }
+
+  function showPage(p) {
+    document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+    document.getElementById('page-'+p).classList.add('active');
+    document.getElementById('nav-'+p).classList.add('active');
+    if(p==='tracker') render();
+    return false;
+  }
+
+  function toggleForm() {
+    const f = document.getElementById('add-form');
+    f.classList.toggle('open');
+    if(f.classList.contains('open')) document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
+  }
+
+  function addApp() {
+    const company = document.getElementById('f-company').value.trim();
+    const role = document.getElementById('f-role').value.trim();
+    if(!company||!role){alert('Company and role are required.');return;}
+    apps.push({
+      id: Date.now(), company, role,
+      location: document.getElementById('f-location').value.trim(),
+      source: document.getElementById('f-source').value,
+      date: document.getElementById('f-date').value,
+      status: document.getElementById('f-status').value,
+      notes: document.getElementById('f-notes').value.trim()
+    });
+    save();
+    ['f-company','f-role','f-location','f-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('add-form').classList.remove('open');
+    render();
+  }
+
+  function moveApp(id, status) {
+    const a = apps.find(x=>x.id===id);
+    if(a){a.status=status;save();render();}
+  }
+
+  function deleteApp(id) {
+    if(!confirm('Delete this application?')) return;
+    apps = apps.filter(x=>x.id!==id);
+    save(); render();
+  }
+
+  function setView(v) {
+    view = v;
+    document.getElementById('btn-kanban').classList.toggle('active', v==='kanban');
+    document.getElementById('btn-list').classList.toggle('active', v==='list');
+    document.getElementById('view-kanban').style.display = v==='kanban'?'block':'none';
+    document.getElementById('view-list').style.display = v==='list'?'block':'none';
+    render();
+  }
+
+  function render() {
+    renderStats();
+    if(view==='kanban') renderKanban();
+    else renderList();
+  }
+
+  function renderStats() {
+    const total = apps.length;
+    const interviews = apps.filter(a=>a.status==='interview').length;
+    const offers = apps.filter(a=>a.status==='offer').length;
+    const rate = total ? Math.round(interviews/total*100) : 0;
+    document.getElementById('stats-row').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Total Applied</div><div class="stat-num">${total}</div></div>
+      <div class="stat-card"><div class="stat-label">In Interview</div><div class="stat-num">${interviews}</div></div>
+      <div class="stat-card"><div class="stat-label">Offers</div><div class="stat-num">${offers}</div></div>
+      <div class="stat-card"><div class="stat-label">Interview Rate</div><div class="stat-num">${rate}%</div></div>
+    `;
+  }
+
+  function renderKanban() {
+    document.getElementById('view-kanban').innerHTML = `<div class="kanban">${
+      COLS.map(col => {
+        const colApps = apps.filter(a=>a.status===col);
+        return `<div class="col">
+          <div class="col-head">
+            <span class="col-title">${COL_LABELS[col]}</span>
+            <span class="col-badge">${colApps.length}</span>
+          </div>
+          ${colApps.length ? colApps.map(a=>`
+            <div class="app-card">
+              <div class="app-company">${a.company}</div>
+              <div class="app-role">${a.role}${a.location?' · '+a.location:''}</div>
+              <div class="app-tags">
+                ${a.source?`<span class="pill pill-gray">${a.source}</span>`:''}
+                ${a.date?`<span class="pill pill-gray">${a.date}</span>`:''}
+              </div>
+            </div>`).join('') : '<div class="empty-col">No applications</div>'}
+        </div>`;
+      }).join('')
+    }</div>`;
+  }
+
+  function renderList() {
+    if(!apps.length){
+      document.getElementById('view-list').innerHTML='<div style="padding:2rem;text-align:center;color:#bbb;font-size:14px;">No applications yet.</div>';
+      return;
+    }
+    document.getElementById('view-list').innerHTML = `
+      <table class="app-table">
+        <thead><tr>
+          <th>Company</th><th>Role</th><th>Status</th><th>Source</th><th>Date</th><th>Notes</th><th>Actions</th>
+        </tr></thead>
+        <tbody>${apps.map(a=>`
+          <tr>
+            <td style="font-weight:700;color:var(--dark);">${a.company}</td>
+            <td>${a.role}${a.location?'<br><span style="font-size:12px;color:var(--light);">'+a.location+'</span>':''}</td>
+            <td><span class="pill ${COL_PILL[a.status]}">${COL_LABELS[a.status]}</span></td>
+            <td>${a.source||'—'}</td>
+            <td style="font-size:13px;">${a.date||'—'}</td>
+            <td><div class="notes-box">${a.notes||'—'}</div></td>
+            <td>
+              ${NEXT[a.status]?`<button class="move-btn" onclick="moveApp(${a.id},'${NEXT[a.status]}')">→ ${COL_LABELS[NEXT[a.status]]}</button>`:''}
+              <button class="del-btn" onclick="deleteApp(${a.id})">✕</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neha Lal – Resume</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --accent: #2c5f8a;
+    --dark: #1a1a1a;
+    --mid: #3a3a3a;
+    --light: #5a5a5a;
+    --rule: #2c5f8a;
+  }
+
+  body {
+    font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9.5pt;
+    color: var(--dark);
+    background: #fff;
+    line-height: 1.45;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    max-height: 297mm;
+    margin: 0 auto;
+    padding: 11mm 13mm 10mm 13mm;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 26pt;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--dark);
+    line-height: 1.1;
+  }
+  .header .tagline {
+    font-size: 9.5pt;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin: 4px 0 6px;
+  }
+  .header .contact {
+    font-size: 8.8pt;
+    color: var(--light);
+  }
+  .header .contact a { color: var(--accent); text-decoration: none; }
+  .header .contact span { margin: 0 5px; color: #ccc; }
+
+  /* ── SECTIONS ── */
+  .section { margin-top: 10px; }
+
+  .section-title {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 11.5pt;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    border-bottom: 1.4px solid var(--rule);
+    padding-bottom: 2px;
+    margin-bottom: 7px;
+  }
+
+  /* ── JOB ── */
+  .job { margin-bottom: 10px; }
+
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1px;
+  }
+  .job-header .company {
+    font-weight: 700;
+    font-size: 10pt;
+    color: var(--dark);
+  }
+  .job-header .period {
+    font-size: 8.8pt;
+    color: var(--light);
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+  .job-role {
+    font-size: 9pt;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .project-label {
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 5px 0 3px 0;
+  }
+
+  ul {
+    padding-left: 13px;
+    margin: 0;
+  }
+  ul li {
+    margin-bottom: 3px;
+    font-size: 9pt;
+    color: var(--mid);
+    line-height: 1.42;
+    list-style-type: disc;
+  }
+  ul li b { color: var(--dark); font-weight: 700; }
+
+  .tech {
+    font-size: 8.5pt;
+    color: var(--light);
+    margin-top: 4px;
+    padding-left: 13px;
+    line-height: 1.4;
+  }
+  .tech b { color: var(--dark); font-weight: 700; }
+
+  /* ── EDUCATION + CERTS ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+  }
+
+  .edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .edu-name { font-weight: 700; font-size: 9.5pt; color: var(--dark); }
+  .edu-meta { font-size: 8.5pt; color: var(--light); text-align: right; }
+  .edu-degree { font-size: 8.8pt; color: var(--mid); margin-top: 1px; }
+
+  .cert-item { font-size: 8.8pt; color: var(--mid); margin-bottom: 3px; line-height: 1.4; }
+  .cert-item b { color: var(--dark); font-weight: 700; }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: #fff; }
+    .page { margin: 0; width: 100%; min-height: 0; max-height: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Neha Lal</h1>
+    <div class="tagline">Software Engineer &mdash; Backend Python &middot; AI Platform</div>
+    <div class="contact">
+      nehalal021@gmail.com
+      <span>|</span> +91 9937860839
+      <span>|</span> <a href="https://www.linkedin.com/in/lal-neha" target="_blank">linkedin.com/in/lal-neha</a>
+      <span>|</span> Bangalore, India
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="section">
+    <div class="section-title">Experience</div>
+
+    <!-- TR -->
+    <div class="job">
+      <div class="job-header">
+        <span class="company">Thomson Reuters</span>
+        <span class="period">Aug 2025 – Present &nbsp;|&nbsp; Bangalore</span>
+      </div>
+      <div class="job-role">Software Engineer – AI Platform</div>
+
+      <div class="project-label">OpenArena – Internal AI Platform</div>
+      <ul>
+        <li>Contributed to <b>OpenArena</b>, a centralised AI platform used across Thomson Reuters and Reuters teams, supporting multiple LLM providers (GPT, Claude, Vertex AI, and Thomson Reuters' own model) through a unified interface.</li>
+        <li>Built <b>product-facing REST APIs</b> in Python handling core user flows — submitting queries to LLMs, fetching saved conversations, and retrieving prompt chain workflows — deployed via <b>AWS Lambda</b> in a serverless architecture.</li>
+        <li>Built new features and resolved bugs across the platform in <b>Agile/Scrum</b> sprints, improving reliability and usability for internal data science and non-technical teams.</li>
+        <li>Conducted <b>weekly user workshops</b> and provided hands-on support to platform users on features like prompt chaining, resolving queries and enabling effective adoption across the organisation.</li>
+      </ul>
+      <div class="tech"><b>Stack:</b> Python, Flask, REST APIs, PostgreSQL, AWS Lambda, Docker, GitHub Actions, Git &nbsp;|&nbsp; <b>AI Tools:</b> GitHub Copilot, Claude, ChatGPT</div>
+    </div>
+
+    <!-- TCS -->
+    <div class="job">
+      <div class="job-header">
+        <span class="company">Tata Consultancy Services</span>
+        <span class="period">Jul 2023 – Jul 2025 &nbsp;|&nbsp; Bangalore</span>
+      </div>
+      <div class="job-role">Python Developer – AWS</div>
+
+      <div class="project-label">Predictive Analytics – Healthcare Data Pipeline</div>
+      <ul>
+        <li>Independently architected an <b>end-to-end AWS data pipeline</b> (Lambda, Step Functions, Glue, Athena) ingesting live telemetry from hospital machines and feeding structured datasets to AI/ML models.</li>
+        <li>Collaborated with end users to improve data readability, enabling the AI model to accurately predict critical working states of medical equipment.</li>
+        <li>Wrote modular <b>Python (Pandas, NumPy)</b> transformation code and tested the pipeline end to end.</li>
+      </ul>
+      <div class="tech"><b>Stack:</b> Python, Pandas, NumPy, AWS Athena, Glue, Lambda, Step Functions, CloudWatch, PostgreSQL, Git</div>
+    </div>
+
+    <!-- IBM -->
+    <div class="job">
+      <div class="job-header">
+        <span class="company">IBM India Pvt. Limited</span>
+        <span class="period">Sep 2020 – Jun 2023 &nbsp;|&nbsp; Bangalore</span>
+      </div>
+      <div class="job-role">Python Application Developer</div>
+
+      <ul>
+        <li>Built a <b>text-classification microservice</b> (Flask + Watson NLU + Regex) that auto-labels unstructured enterprise data at scale; iterated features to push model accuracy to <b>78%</b>. <i>Won Runners-Up, IBM Innovation Stories 2021.</i></li>
+        <li>Delivered <b>API integration and backend platform migration</b> (Docker, Kubernetes, OpenShift) as part of an Agile team; led end-to-end testing and served as the <b>primary point of contact</b> between Product, Support, and Consulting teams.</li>
+      </ul>
+      <div class="tech"><b>Stack:</b> Python, Flask, NLP, Watson NLU, Pandas, NumPy, Docker, Kubernetes, MongoDB, IBM Cloud, Git</div>
+    </div>
+
+    <!-- Trainee -->
+    <div class="job">
+      <div class="job-header">
+        <span class="company">IBM India Pvt. Limited</span>
+        <span class="period">Feb 2020 – Aug 2020 &nbsp;|&nbsp; Bangalore</span>
+      </div>
+      <div class="job-role">Associate Systems Engineer Trainee</div>
+      <ul>
+        <li>Built a full-stack <b>Clinic Automation System</b> (HTML/CSS/JS front end, SQL/C back end) as a solo trainee project; led a batch of <b>30 students</b> as Student Representative.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- EDUCATION + CERTS -->
+  <div class="section">
+    <div class="section-title">Education &amp; Certifications</div>
+    <div class="two-col">
+      <div>
+        <div class="edu-row">
+          <span class="edu-name">KIIT University</span>
+          <span class="edu-meta">GPA 8.91 &nbsp;|&nbsp; Jun 2020</span>
+        </div>
+        <div class="edu-degree">B.Tech in Computer Science Engineering, Bhubaneswar</div>
+      </div>
+      <div>
+        <div class="cert-item"><b>Microsoft Azure Fundamentals</b> (AZ-900) &mdash; 2021</div>
+        <div class="cert-item"><b>Neural Networks &amp; Deep Learning</b> &mdash; Coursera / deeplearning.ai, 2019</div>
+        <div class="cert-item"><b>Python for Data Science &amp; ML Bootcamp</b> &mdash; Udemy, 2018</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLICATION -->
+  <div class="section">
+    <div class="section-title">Publication</div>
+    <div style="font-size:9pt; color:var(--dark); font-weight:700; margin-bottom:2px;">
+      Book Chapter &nbsp;|&nbsp; <span style="font-weight:400; color:var(--light);">Presented at 8th Project Innovation Contest (ICDCIT) &nbsp;|&nbsp; December 2019</span>
+    </div>
+    <div style="font-size:9pt; color:var(--mid); line-height:1.5;">
+      Lal N., Ramrakhaini S., Yadav N., Bilgaiyan S. (2019). <i>Analysis of Emission of Harmful Gases by Industries</i> in Project Innovations in Distributed Computing and Internet Technology — Proceedings of 8th PIC 2019 (A sister concern activity of 15th ICDCIT), ed.(s) Rautaray S.S., Singh J., Dash S., Pandey M., Sahoo B., pp. 209–216.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
